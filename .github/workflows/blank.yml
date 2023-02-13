@@ -2,7 +2,7 @@ name: Deploy EC2 #Name of the workflow
 on: workflow_dispatch #Manual Trigger --> https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 jobs: #Define the work that will be done
   prod-virginia:
-    runs on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     steps: #Define the steps to be executed
       - name: Checkout code
         uses: actions/checkout@v3
