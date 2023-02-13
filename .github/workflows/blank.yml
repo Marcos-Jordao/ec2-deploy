@@ -60,7 +60,5 @@ jobs: #Define the work that will be done
           approvers: Marcos-Jordao
           
       - name: Terraform Destroy
-        run: |
-          terraform plan -destroy
-          terraform apply -destroy -auto-approve #-input=false       
+        run: terraform destroy -auto-approve       
           
