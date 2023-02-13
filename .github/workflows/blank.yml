@@ -7,6 +7,8 @@ env:
 
 jobs: #Define the work that will be done
   prod-virginia:
+    permissions:
+      issues: write    
     runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     env:
       TF_VAR_AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION_1 }}
