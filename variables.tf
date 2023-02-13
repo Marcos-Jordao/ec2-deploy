@@ -5,3 +5,7 @@ variable "ACCOUNT_ID" {
 variable "AWS_DEFAULT_REGION" {
   type = string
 }
+
+variable "environment" {
+  type = string
+}
