@@ -1,8 +1,15 @@
 name: Deploy EC2 #Name of the workflow
 on: workflow_dispatch #Manual Trigger --> https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+env:
+  TF_VAR_ACCOUNT_ID: ${{ secrets.$ACCOUNT_ID }}
+  TF_VAR_domain_pass: ${{ secrets.$DOMAIN_PASS }}
+  TF_VAR_domain_user: ${{ secrets.$DOMAIN_USER }}
+
 jobs: #Define the work that will be done
   prod-virginia:
     runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    env:
+      TF_VAR_AWS_DEFAULT_REGION: ${{ vars.$AWS_DEFAULT_REGION_1 }}
     steps: #Define the steps to be executed
       - name: Checkout code
         uses: actions/checkout@v3
@@ -14,5 +21,34 @@ jobs: #Define the work that will be done
           aws-secret-access-key: ${{ secrets.MASTER_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           
-      - name: AWS ClI S3 LS
-        run: aws s3 ls
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init 
+          -backend-config=bucket=terraform-state-store-368278018623 
+          -backend-config=key=$TF_VAR_ACCOUNT_ID/$TF_VAR_ACCOUNT_ID-$TF_VAR_AWS_DEFAULT_REGION.tfstate 
+          -backend-config=region=us-east-1 -backend-config=dynamodb_table=terraform-lock 
+          -input=false -backend-config encrypt=true
+
+        
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        
+      - name: Terraform Plan
+        id: plan
+        #if: github.event_name == 'pull_request'
+        run: terraform plan -var-file="variables/${ENV}.tfvars" -out "terraform.tfplan" #-no-color -input=false
+        continue-on-error: true
+        
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+          
