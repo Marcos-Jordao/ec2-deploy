@@ -43,4 +43,12 @@ jobs: #Define the work that will be done
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+        
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: Marcos-Jordao
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve #-input=false
           
