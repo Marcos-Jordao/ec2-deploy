@@ -11,7 +11,7 @@ jobs: #Define the work that will be done
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.MASTER_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AMASTER_AWS_SECRET_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.MASTER_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
           
       - name: AWS ClI S3 LS
