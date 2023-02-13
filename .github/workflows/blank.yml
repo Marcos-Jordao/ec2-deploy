@@ -52,5 +52,5 @@ jobs: #Define the work that will be done
           approvers: Marcos-Jordao
       
       - name: Terraform Apply
-        run: terraform apply -auto-approve #-input=false
+        run: terraform apply -auto-approve -var-file="variables/$ENV.tfvars" #-input=false
           
