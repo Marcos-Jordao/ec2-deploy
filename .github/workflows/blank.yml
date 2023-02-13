@@ -1,0 +1,18 @@
+name: Deploy EC2 #Name of the workflow
+on: workflow_dispatch #Manual Trigger --> https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+jobs: #Define the work that will be done
+  prod-virginia:
+    runs on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    steps: #Define the steps to be executed
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.MASTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AMASTER_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
+      - name: AWS ClI S3 LS
+        run: aws s3 ls
