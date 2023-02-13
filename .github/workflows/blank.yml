@@ -54,12 +54,8 @@ jobs: #Define the work that will be done
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file="variables/$ENV.tfvars" #-input=false
         
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: Marcos-Jordao
-        
-  destry-prod-virginia:
+  destory-prod-virginia:
+    needs: [deploy-prod-virginia]
     permissions:
       issues: write    
     runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
