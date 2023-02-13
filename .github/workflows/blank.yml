@@ -59,6 +59,8 @@ jobs: #Define the work that will be done
           secret: ${{ github.TOKEN }}
           approvers: Marcos-Jordao
           
-      - name: Terraform Deploy
-        run: terraform apply -destroy -auto-approve #-input=false
+      - name: Terraform Destroy
+        run: |
+          terraform plan -destroy
+          terraform apply -destroy -auto-approve #-input=false       
           
