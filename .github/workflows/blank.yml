@@ -28,13 +28,8 @@ jobs: #Define the work that will be done
       - name: Terraform Init
         id: init
         run: |
-          terraform init 
-          -backend-config=bucket=terraform-state-store-368278018623 
-          -backend-config=key=$TF_VAR_ACCOUNT_ID/$TF_VAR_ACCOUNT_ID-$TF_VAR_AWS_DEFAULT_REGION.tfstate 
-          -backend-config=region=us-east-1 -backend-config=dynamodb_table=terraform-lock 
-          -input=false -backend-config encrypt=true
-
-        
+          terraform init -backend-config=bucket=terraform-state-store-368278018623 -backend-config=key=$TF_VAR_ACCOUNT_ID/$TF_VAR_ACCOUNT_ID-$TF_VAR_AWS_DEFAULT_REGION.tfstate -backend-config=region=us-east-1 -backend-config=dynamodb_table=terraform-lock -input=false -backend-config encrypt=true
+          
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
