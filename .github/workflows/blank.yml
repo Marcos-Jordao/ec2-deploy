@@ -15,7 +15,8 @@ jobs: #Define the work that will be done
       ENV: prd-virginia
     steps: #Define the steps to be executed
       - name: Checkout code
-        run: | #uses: actions/checkout@v3
+        uses: actions/checkout@v3
+      - run: |
           git config --local --remove-section http."https://github.com/"
           git config --global url."https://foo:${GH_TOKEN}@github.com/Marcos-Jordao".insteadOf "https://github.com/Marcos-Jordao"
         env:
