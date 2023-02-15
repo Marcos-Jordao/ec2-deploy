@@ -68,7 +68,7 @@ jobs: #Define the work that will be done
       #   run: terraform apply -destroy -auto-approve -var-file="variables/$ENV.tfvars"
 
   deploy-prod-oregon:
-    need: deploy-prod-virginia
+    needs: deploy-prod-virginia
     permissions:
       issues: write    
     runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
