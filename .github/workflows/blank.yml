@@ -15,7 +15,11 @@ jobs: #Define the work that will be done
       ENV: prd-virginia
     steps: #Define the steps to be executed
       - name: Checkout code
-        uses: actions/checkout@v3
+        run: | #uses: actions/checkout@v3
+          git config --local --remove-section http."https://github.com/"
+          git config --global url."https://foo:${GH_TOKEN}@github.com/Marcos-Jordao".insteadOf "https://github.com/Marcos-Jordao"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
