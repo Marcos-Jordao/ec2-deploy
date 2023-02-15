@@ -1,8 +1,8 @@
 output "region" {
  description = "Deploy Region"
-  value       = data.aws_region.current.name
+  value       = module.my-ec2.region
 }
 
 output "account_id" {
-  value = data.aws_caller_identity.current.account_id
+  value = module.my-ec2.account_id
 }
