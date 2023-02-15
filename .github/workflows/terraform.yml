@@ -66,3 +66,64 @@ jobs: #Define the work that will be done
       
       - name: Terraform Destroy
         run: terraform apply -destroy -auto-approve -var-file="variables/$ENV.tfvars"
+
+  deploy-prod-oregon:
+    permissions:
+      issues: write    
+    runs-on: ubuntu-latest #Define a runner --> https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    env:
+      TF_VAR_AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION_2 }}
+      ENV: prd-oregon
+    steps: #Define the steps to be executed
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: |
+          git config --local --remove-section http."https://github.com/"
+          git config --global url."https://foo:${GH_TOKEN}@github.com/Marcos-Jordao".insteadOf "https://github.com/Marcos-Jordao"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.MASTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.MASTER_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init -backend-config=bucket=terraform-state-store-368278018623 -backend-config=key=$TF_VAR_ACCOUNT_ID/$TF_VAR_ACCOUNT_ID-$TF_VAR_AWS_DEFAULT_REGION.tfstate -backend-config=region=us-east-1 -backend-config=dynamodb_table=terraform-lock -input=false -backend-config encrypt=true
+          
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        
+      - name: Terraform Plan
+        id: plan
+        #if: github.event_name == 'pull_request'
+        run: terraform plan -var-file="variables/$ENV.tfvars" -out "terraform.tfplan" #-no-color -input=false
+        continue-on-error: true
+        
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+        
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: Marcos-Jordao
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file="variables/$ENV.tfvars" #-input=false
+
+      # - uses: trstringer/manual-approval@v1
+      #   with:
+      #     secret: ${{ github.TOKEN }}
+      #     approvers: Marcos-Jordao
+      
+      # - name: Terraform Destroy
+      #   run: terraform apply -destroy -auto-approve -var-file="variables/$ENV.tfvars"
