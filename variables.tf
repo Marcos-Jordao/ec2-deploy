@@ -9,3 +9,7 @@ variable "AWS_DEFAULT_REGION" {
 variable "environment" {
   type = string
 }
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
