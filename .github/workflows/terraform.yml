@@ -59,13 +59,13 @@ jobs: #Define the work that will be done
       - name: Terraform Apply
         run: terraform apply -auto-approve -var-file="variables/$ENV.tfvars" #-input=false
 
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: Marcos-Jordao
+      # - uses: trstringer/manual-approval@v1
+      #   with:
+      #     secret: ${{ github.TOKEN }}
+      #     approvers: Marcos-Jordao
       
-      - name: Terraform Destroy
-        run: terraform apply -destroy -auto-approve -var-file="variables/$ENV.tfvars"
+      # - name: Terraform Destroy
+      #   run: terraform apply -destroy -auto-approve -var-file="variables/$ENV.tfvars"
 
   deploy-prod-oregon:
     permissions:
