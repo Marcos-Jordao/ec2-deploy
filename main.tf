@@ -19,7 +19,8 @@ provider "aws" {
 }
 
 module "my-ec2" {
- source   = "./modules/ec2"
+ source = "git::https://github.com/Marcos-Jordao/terraform-modules.git//ec2?ref=main"
+ #source   = "./modules/ec2"
  environment = var.environment
  ec2_size = "t3a.micro"
 }
